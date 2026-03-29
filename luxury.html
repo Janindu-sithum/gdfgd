@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sri Verse | Premium Documentary Portal</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,900;1,400&family=Montserrat:wght@100;300;600&family=Noto+Sans+Sinhala:wght@100;400;700&display=swap');
+
+        :root {
+            --accent: #e5e5e5;
+            --bg: #080808;
+            --gold-dim: #967b4c;
+            --glass-white: rgba(255, 255, 255, 0.03);
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Montserrat', 'Noto Sans Sinhala', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--accent);
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 50%, #111 0%, #080808 100%);
+        }
+
+        /* --- Cinematic Grain Overlay --- */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png');
+            opacity: 0.2;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* --- Premium Navigation --- */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            padding: 40px 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            mix-blend-mode: difference;
+        }
+
+        .logo {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+        }
+
+        /* --- Hero Section (Documentary Style) --- */
+        .hero {
+            height: 110vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-label {
+            font-size: 0.7rem;
+            letter-spacing: 12px;
+            text-transform: uppercase;
+            color: var(--gold-dim);
+            margin-bottom: 20px;
+            opacity: 0;
+        }
+
+        .hero h1 {
+            font-family: 'Bodoni Moda', serif;
+            font-size: clamp(3.5rem, 15vw, 10rem);
+            font-weight: 900;
+            font-style: italic;
+            line-height: 0.8;
+            opacity: 0;
+            transform: scale(1.1);
+        }
+
+        /* --- Membership Section (The Archive) --- */
+        .archive-section {
+            padding: 200px 10%;
+            display: flex;
+            justify-content: center;
+            background: linear-gradient(to bottom, transparent, #0a0a0a);
+        }
+
+        .membership-box {
+            background: var(--glass-white);
+            border: 0.5px solid rgba(255,255,255,0.1);
+            padding: 100px 60px;
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            backdrop-filter: blur(40px);
+            position: relative;
+        }
+
+        .membership-box h2 {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 3rem;
+            margin-bottom: 40px;
+            font-weight: 400;
+        }
+
+        .input-minimal {
+            width: 100%;
+            max-width: 400px;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding: 15px;
+            color: #fff;
+            font-size: 1rem;
+            text-align: center;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+            transition: 0.5s;
+        }
+
+        .input-minimal:focus {
+            outline: none;
+            border-bottom-color: #fff;
+            transform: scale(1.05);
+        }
+
+        .btn-luxury {
+            background: transparent;
+            color: #fff;
+            border: 1px solid #fff;
+            padding: 15px 45px;
+            font-size: 0.8rem;
+            letter-spacing: 5px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.4s;
+        }
+
+        .btn-luxury:hover {
+            background: #fff;
+            color: #000;
+        }
+
+        /* --- Profile After Access --- */
+        #profile-content {
+            display: none;
+            animation: fadeIn 2.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        }
+
+        .id-badge {
+            font-size: 0.6rem;
+            border: 1px solid var(--gold-dim);
+            padding: 4px 12px;
+            color: var(--gold-dim);
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        /* --- Cinematic Video Reveal --- */
+        .video-container {
+            padding: 0 5% 200px;
+        }
+
+        .video-frame {
+            width: 100%;
+            height: 80vh;
+            background: #000;
+            overflow: hidden;
+            position: relative;
+            transform: scale(0.95);
+            opacity: 0;
+            transition: 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .video-frame.active {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        iframe { width: 100%; height: 100%; border: none; filter: contrast(1.1) grayscale(0.2); }
+
+        footer {
+            padding: 100px;
+            text-align: center;
+            font-size: 0.6rem;
+            letter-spacing: 6px;
+            color: #333;
+            text-transform: uppercase;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">Sri Verse</div>
+        <div style="font-size: 0.6rem; letter-spacing: 4px; opacity: 0.5;">CHAPTER: DOCUMENTARY</div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-label">A Production By Sri Verse</div>
+        <h1 id="hero-title">Untold. <br> Unseen.</h1>
+    </header>
+
+    <section class="archive-section" id="access">
+        <div class="membership-box">
+            <div id="reg-form">
+                <h2 style="font-style: italic;">Access The Archive</h2>
+                <p style="font-size: 0.8rem; letter-spacing: 3px; margin-bottom: 50px; opacity: 0.5;">මුද්‍රා තැබූ රහස්‍ය තොරතුරු සඳහා ලියාපදිංචි වන්න</p>
+                
+                <input type="text" id="uName" class="input-minimal" placeholder="FULL NAME">
+                <br>
+                <button class="btn-luxury" onclick="unlockArchive()">Enter Experience</button>
+            </div>
+
+            <div id="profile-content">
+                <div class="id-badge">AUTHENTICATED MEMBER</div>
+                <h2 id="welcome-name" style="font-style: italic; font-size: 4rem;"></h2>
+                <p style="font-size: 0.7rem; letter-spacing: 5px; color: var(--gold-dim); margin-top: 20px;">ACCESS GRANTED: LEVEL ELITE</p>
+                <div style="margin-top: 50px; height: 1px; width: 100px; background: #333; margin-left: auto; margin-right: auto;"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="video-container">
+        <div class="video-frame" id="main-video">
+            <iframe src="https://www.youtube.com/embed/videoseries?list=UULFP_dth-HuE2J" allowfullscreen></iframe>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 SRI VERSE PRODUCTIONS. <br> REDEFINING CINEMATIC STORYTELLING.</p>
+    </footer>
+
+    <script>
+        // Smooth Hero Entrance
+        window.onload = () => {
+            gsap.to(".hero-label", { opacity: 1, duration: 2, delay: 0.5 });
+            gsap.to("#hero-title", { opacity: 1, scale: 1, duration: 2.5, ease: "expo.out", delay: 0.8 });
+        };
+
+        // Scroll Reveal for Video
+        window.addEventListener('scroll', () => {
+            const video = document.getElementById('main-video');
+            const pos = video.getBoundingClientRect().top;
+            if(pos < window.innerHeight - 150) {
+                video.classList.add('active');
+            }
+        });
+
+        // Membership Logic
+        function unlockArchive() {
+            const name = document.getElementById('uName').value;
+            if(!name) return;
+
+            gsap.to("#reg-form", { opacity: 0, y: -30, duration: 0.8, ease: "power4.in", onComplete: () => {
+                document.getElementById('reg-form').style.display = "none";
+                document.getElementById('profile-content').style.display = "block";
+                document.getElementById('welcome-name').innerText = name;
+                
+                // Final reveal scroll
+                setTimeout(() => {
+                    document.getElementById('main-video').scrollIntoView({ behavior: 'smooth' });
+                }, 1500);
+            }});
+        }
+
+        // Parallax Subtle Movement
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX - window.innerWidth / 2) * 0.02;
+            const y = (e.clientY - window.innerHeight / 2) * 0.02;
+            gsap.to("#hero-title", { x: x, y: y, duration: 2 });
+        });
+    </script>
+</body>
+</html>
